@@ -12,7 +12,7 @@ install:
     - pip install --upgrade setuptools
     - pip install django==$DJANGO_VERSION
     - pip install djangorestframework
-    - pip install pygments
+    - pip install djangorestframework-jwt
     - pip install Pymysql
 script:
     - python manage.py test
