@@ -13,6 +13,7 @@ install:
     - pip install django==$DJANGO_VERSION
     - pip install djangorestframework
     - pip install djangorestframework-jwt
-    - pip install Pymysql
+    - pip install django-rest-auth
+    - pip install django-rest-auth[with_social]
 script:
     - python manage.py test

@@ -18,13 +18,14 @@ from django.contrib import admin
 from rest_framework_jwt.views import obtain_jwt_token
 # from rest_framework.routers import DefaultRouter
 
-
 # route = DefaultRouter()
 
 
 urlpatterns = [
     # url(r'^',include(route.urls))
+    url(r'^api/v1/rest-auth/',include('rest_auth.urls')),
+    url(r'^api/v1/rest-auth/registration/',include('rest_auth.registration.urls')),
     url(r'^api/v1/auth/api-token-auth/', obtain_jwt_token),
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1/auth',include('rest_framework.urls'))
+    url(r'^api/v1/auth',include('rest_framework.urls')),
 ]
