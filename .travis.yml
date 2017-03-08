@@ -9,11 +9,6 @@ env:
     - DJANGO_VERSION=1.8.17
 install:
     - pip install --upgrade pip
-    - pip install --upgrade setuptools
-    - pip install django==$DJANGO_VERSION
-    - pip install djangorestframework
-    - pip install djangorestframework-jwt
-    - pip install django-rest-auth
-    - pip install django-rest-auth[with_social]
+    - pip install -r requirement.txt
 script:
     - python manage.py test
