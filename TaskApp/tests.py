@@ -11,15 +11,12 @@ from django.test.testcases import SimpleTestCase
 from djet import assertions, utils, restframework
 
 from rest_framework import status, authtoken
-from rest_framework.request import Request, override_method
 
 import djoser.views
 import djoser.constants
 import djoser.utils
 import djoser.signals
 import djoser.serializers
-
-from djoser.settings import merge_settings_dicts
 
 def create_user(**kwargs):
     data = {
