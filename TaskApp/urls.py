@@ -17,10 +17,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework_jwt.views import obtain_jwt_token,refresh_jwt_token,verify_jwt_token
 from .views import CustomRegistrationView
+from djoser.views import LogoutView
 
 urlpatterns = [
     # url(r'^',include(route.urls))
     url(r'^api/v1/auth/user/login', obtain_jwt_token),
+    url(r'^api/v1/auth/user/logout', LogoutView.as_view()),
     url(r'^api/v1/auth/user/register', CustomRegistrationView.as_view()),#debug时使用这个接口来获得邮件内容，显示在控制台
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1/auth/',include('rest_framework.urls')),
