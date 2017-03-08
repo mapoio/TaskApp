@@ -25,7 +25,9 @@ SECRET_KEY = 'ch0-mc-d_e!t9rb4f0d7o_6-4avkvsorc%xlq^+=u*m+&q+(3t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+]
 
 
 # Application definition
@@ -51,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -175,7 +177,7 @@ DJOSER = {
     'SITE_NAME': 'Frontend',
     'PASSWORD_RESET_CONFIRM_URL': 'api/v1/auth/user/password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'api/v1/auth/user/activate/{uid}/{token}',
-    'SET_PASSWORD_RETYPE': True,
+    'SET_PASSWORD_RETYPE': False,
     'SEND_ACTIVATION_EMAIL': True,
     'PASSWORD_VALIDATORS': [],
     'SERIALIZERS': {},
