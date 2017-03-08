@@ -179,6 +179,7 @@ DJOSER = {
     'ACTIVATION_URL': 'api/v1/auth/user/activate/{uid}/{token}',
     'SET_PASSWORD_RETYPE': False,
     'SEND_ACTIVATION_EMAIL': True,
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND':False,
     'PASSWORD_VALIDATORS': [],
     'SERIALIZERS': {},
 }
