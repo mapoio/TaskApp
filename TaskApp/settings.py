@@ -9,11 +9,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
-import os,datetime
+import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -27,7 +27,6 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '*',
 ]
-
 
 # Application definition
 
@@ -62,7 +61,7 @@ ROOT_URLCONF = 'TaskApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'TaskApp.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -87,7 +85,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -108,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend', # this is default
+    'django.contrib.auth.backends.ModelBackend',  # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
 
@@ -124,7 +121,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -145,19 +141,19 @@ REST_FRAMEWORK = {
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER':
-    'rest_framework_jwt.utils.jwt_encode_handler',
+        'rest_framework_jwt.utils.jwt_encode_handler',
 
     'JWT_DECODE_HANDLER':
-    'rest_framework_jwt.utils.jwt_decode_handler',
+        'rest_framework_jwt.utils.jwt_decode_handler',
 
     'JWT_PAYLOAD_HANDLER':
-    'rest_framework_jwt.utils.jwt_payload_handler',
+        'rest_framework_jwt.utils.jwt_payload_handler',
 
     'JWT_PAYLOAD_GET_USER_ID_HANDLER':
-    'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
+        'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
 
     'JWT_RESPONSE_PAYLOAD_HANDLER':
-    'rest_framework_jwt.utils.jwt_response_payload_handler',
+        'rest_framework_jwt.utils.jwt_response_payload_handler',
     'SEND_ACTIVATION_EMAIL': True,
     'JWT_PUBLIC_KEY': None,
     'JWT_PRIVATE_KEY': None,
@@ -182,7 +178,7 @@ DJOSER = {
     'ACTIVATION_URL': 'api/v1/auth/user/activate/{uid}/{token}',
     'SET_PASSWORD_RETYPE': False,
     'SEND_ACTIVATION_EMAIL': True,
-    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND':False,
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': False,
     'PASSWORD_VALIDATORS': [],
     'SERIALIZERS': {},
 }
