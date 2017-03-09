@@ -1,4 +1,5 @@
 appdirs==1.4.2
+coverage==4.0.3
 defusedxml==0.5.0
 Django==1.10.6
 django-guardian==1.4.6
@@ -13,7 +14,9 @@ oauthlib==2.0.1
 packaging==16.8
 PyJWT==1.4.2
 pyparsing==2.2.0
+python-coveralls==2.9.0
 python3-openid==3.1.0
+PyYAML==3.12
 requests==2.13.0
 requests-oauthlib==0.8.0
 six==1.10.0
