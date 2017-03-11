@@ -1,15 +1,18 @@
 from django.shortcuts import render
 from .serializer import CompanySerializer,DepartmentSerializer
 from .models import Company,Department
-from rest_framework import viewsets
+from rest_framework import viewsets,permissions
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework import status
+from .permission import IsAdminCreateOnly
 # Create your views here.
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsAdminCreateOnly)
 
     def post(self, request, *args, **kwargs):
         data = {
@@ -31,4 +34,6 @@ class CompanyViewSet(viewsets.ModelViewSet):
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsAdminCreateOnly)
 
