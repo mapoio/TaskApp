@@ -10,7 +10,10 @@ env:
 install:
     - pip install --upgrade pip
     - pip install -r requirement.txt
+before_script:
+    - coverage run --source='.' manage.py test TaskApp
+    - coverage report
 script:
     - python manage.py test
 after_success:
-    - coverage
+    - coveralls
