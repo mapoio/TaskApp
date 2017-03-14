@@ -23,6 +23,5 @@ urlpatterns = [
     url(r'^api/v1/auth/',include('rest_framework.urls')),
     url(r'^api/v1/auth/user/', include('TaskApp.user_url')),
     url(r'^api/v1/auth/',include('company.urls')),
-    url(r'^api/v1/auth/',include('profile.urls')),
 ]
 
