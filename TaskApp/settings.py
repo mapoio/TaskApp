@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'guardian',
     'djoser',
     'company',
-    # 'profile',
+    'profile',
+    'rest_framework_swagger',
+
 ]
 
 if DEBUG:
@@ -76,6 +79,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'TaskApp.wsgi.application'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
