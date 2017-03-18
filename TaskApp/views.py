@@ -1,8 +1,11 @@
 from djoser.views import RegistrationView
-from djoser import serializers, settings, utils
+from djoser import serializers, settings, utils,signals
 from TaskApp import settings
+from rest_framework.response import Response
 from rest_framework import generics, permissions, status, response
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from profile.models import Profile
 
 User = get_user_model()
 
@@ -12,6 +15,42 @@ class CustomRegistrationView(RegistrationView):
     实际过程中不会调用，注意，在激活地址中是由前台来控制的，参数是直接在最后两个字段，
     由前端调用，用来激活
     '''
+    def create(self, request, *args, **kwargs):
+        nickname = request.data['nickname'] if False else ' '
+        sex= request.data['sex'] if False else 1
+        phone = request.data['phone'] if False else ' '
+        data = {
+            'email':request.data['email'],
+            'username':request.data['username'],
+            'password':request.data['password'],
+            'nickname':nickname,
+            'sex':sex,
+            'phone':phone,
+        }
+        # 这里还要添加验证模型的东西
+        user = User(email = data['email'],username = data['username'],password = data['password'],is_active = 0)
+        try:
+            user.save()
+            profile = Profile(nickname=data['nickname'], sex=data['sex'], phone=data['phone'], user=user,user_id=user.id)
+            profile.save()
+            signals.user_registered.send(sender=self.__class__, user=user, request=self.request)
+            if 1:
+                self.send_activation_email(user)
+            elif settings.get('SEND_CONFIRMATION_EMAIL'):
+                self.send_confirmation_email(user)
+            return Response({'status': 'User created success'},
+                            status=status.HTTP_201_CREATED)
+        except:
+            return Response({'status': 'error'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        signals.user_registered.send(sender=self.__class__, user=user, request=self.request)
+        if settings.get('SEND_ACTIVATION_EMAIL'):
+            self.send_activation_email(user)
+        elif settings.get('SEND_CONFIRMATION_EMAIL'):
+            self.send_confirmation_email(user)
 
     def send_activation_email(self, user):
         email_factory = utils.UserActivationEmailFactory.from_request(self.request, user=user)
