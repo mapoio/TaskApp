@@ -6,7 +6,8 @@ from rest_framework import generics, permissions, status, response
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from profile.models import Profile
-
+from djoser.serializers import UserRegistrationSerializer
+from profile.serializer import ProfileSerializer
 User = get_user_model()
 
 class CustomRegistrationView(RegistrationView):
@@ -20,18 +21,26 @@ class CustomRegistrationView(RegistrationView):
         sex= request.data['sex'] if False else 1
         phone = request.data['phone'] if False else ' '
         data = {
-            'email':request.data['email'],
-            'username':request.data['username'],
-            'password':request.data['password'],
-            'nickname':nickname,
-            'sex':sex,
-            'phone':phone,
+            'email': request.data['email'],
+            'username': request.data['username'],
+            'password': request.data['password']
         }
         # 这里还要添加验证模型的东西
-        user = User(email = data['email'],username = data['username'],password = data['password'],is_active = 0)
+        # user = User(email = data['email'],username = data['username'],password = data['password'],is_active = 0)
+
         try:
-            user.save()
-            profile = Profile(nickname=data['nickname'], sex=data['sex'], phone=data['phone'], user=user,user_id=user.id)
+            users = UserRegistrationSerializer(data=data)
+            users.is_valid()
+            users.save()
+            user = User.objects.get(username = data['username'])
+            profile_data = {
+                'nickname': nickname,
+                'sex': sex,
+                'phone': phone,
+            }
+            profile = Profile(nickname=profile_data['nickname'], sex=profile_data['sex'], phone=profile_data['phone'], user=user,user_id=user.id)
+        # profile = ProfileSerializer(data=profile_data)
+        # profile.is_valid()
             profile.save()
             signals.user_registered.send(sender=self.__class__, user=user, request=self.request)
             if 1:
@@ -41,7 +50,7 @@ class CustomRegistrationView(RegistrationView):
             return Response({'status': 'User created success'},
                             status=status.HTTP_201_CREATED)
         except:
-            return Response({'status': 'error'},
+            return Response(users.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
