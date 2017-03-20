@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'company',
     'profile',
     'rest_framework_swagger',
+    'util',
 
 ]
 
@@ -184,5 +185,7 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': False,
     'PASSWORD_VALIDATORS': [],
-    'SERIALIZERS': {},
+    'SERIALIZERS': {
+        'user_registration': 'profile.serializer.UserRegistrationSerializer',
+    },
 }

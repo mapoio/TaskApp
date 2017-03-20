@@ -3,10 +3,11 @@ from rest_framework import viewsets,permissions
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Profile
-from .serializer import ProfileSerializer
+from django.contrib.auth.models import User
+from .serializer import ProfileSerializer,UserSerializer
 # Create your views here.
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

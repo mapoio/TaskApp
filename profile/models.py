@@ -23,20 +23,10 @@ class Profile(models.Model):
     sex = models.IntegerField(default=0)
     phone = models.CharField(max_length=64,default='',blank=True)
     department = models.ForeignKey(Department,null=True,related_name='profile',default=None)
-    # group = models.ForeignKey(Group,null=True,related_name='profile',default=None)
-    # is_active = models.BooleanField(default=True,db_index=True)
 
     class Meta:
         ordering = ('-created','nickname')
         get_latest_by = 'created'
 
     def __str__(self):
-        return '%s: %s' % self.user_id,self.user.username
-
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         profile = Profile()
-#         profile.user = instance
-#         profile.save()
-#
-# post_save.connect(create_user_profile, sender=User)
+        return 'id: %s' % self.user_id

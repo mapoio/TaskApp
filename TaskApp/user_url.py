@@ -1,6 +1,6 @@
 from django.conf.urls import url,include
 from rest_framework_jwt.views import obtain_jwt_token,refresh_jwt_token,verify_jwt_token
-from .views import CustomRegistrationView,CustomPasswordResetView
+from .views import CustomPasswordResetView,CustomRegistrationView
 from djoser.views import LogoutView
 from  .settings import DEBUG
 
@@ -11,7 +11,6 @@ if DEBUG:
         url(r'^password/reset/', CustomPasswordResetView.as_view()),  # 开发时时使用这个接口来获得邮件内容，显示在控制台
         url(r'^register', CustomRegistrationView.as_view()),  # debug时使用这个接口来获得邮件内容，显示在控制台
     ]
-
 urlpatterns += [
     url(r'^login', obtain_jwt_token),
     url(r'^logout', LogoutView.as_view()),

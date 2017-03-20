@@ -27,6 +27,4 @@ urlpatterns = [
     url(r'^api/v1/auth/',include('company.urls')),
     url(r'^api/v1/auth/',include('profile.urls')),
     url(r'^api/v1/doc/', schema_view),
-
 ]
-
