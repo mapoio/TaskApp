@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'profile',
     'rest_framework_swagger',
     'util',
-
 ]
 
 if DEBUG:
@@ -141,6 +140,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'util.handler.custom_exception_handler',
     'PAGE_SIZE': 10,
 }
 

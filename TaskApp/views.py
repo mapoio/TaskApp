@@ -1,42 +1,9 @@
 from djoser.views import RegistrationView
 from djoser import serializers, settings, utils,signals
 from TaskApp.settings import DEBUG
-from rest_framework.response import Response
 from rest_framework import generics, permissions, status, response
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-from profile.models import Profile
-# from djoser.serializers import UserRegistrationSerializer
-from profile.serializer import UserRegistrationSerializer
 User = get_user_model()
-
-
-# class CustomRegistrationView(generics.CreateAPIView):
-#     """
-#     Use this endpoint to register new user.
-#     """
-#     serializer_class = UserRegistrationSerializer
-#     permission_classes = (
-#         permissions.AllowAny,
-#     )
-#
-#     def perform_create(self, serializer):
-#         user = serializer.save()
-#         signals.user_registered.send(sender=self.__class__, user=user, request=self.request)
-#         # if 1:
-#         self.send_activation_email(user)
-#         # elif settings.get('SEND_CONFIRMATION_EMAIL'):
-#         #     self.send_confirmation_email(user)
-#
-#     def send_activation_email(self, user):
-#         email_factory = utils.UserActivationEmailFactory.from_request(self.request, user=user)
-#         email = email_factory.create()
-#         email.send()
-#
-#     def send_confirmation_email(self, user):
-#         email_factory = utils.UserConfirmationEmailFactory.from_request(self.request, user=user)
-#         email = email_factory.create()
-#         email.send()
 
 class CustomRegistrationView(RegistrationView):
     '''

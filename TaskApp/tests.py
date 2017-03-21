@@ -58,6 +58,7 @@ class RegistrationViewTest(restframework.APIViewTestCase,
             'username': 'john',
             'email': 'john@beatles.com',
             'password': 'secret',
+            'profile':'',
         }
         request = self.factory.post(data=data)
 
@@ -114,7 +115,7 @@ class RegistrationViewTest(restframework.APIViewTestCase,
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'password': ['该字段不能为空。']})
+        self.assertEqual(response.data['password'], ['该字段不能为空。'])
 
 
 class LoginViewTest(restframework.APIViewTestCase,
@@ -461,7 +462,7 @@ class PasswordResetConfirmViewTest(restframework.APIViewTestCase,
         request = self.factory.post(data=data)
         response = self.view(request)
         self.assert_status_equal(response, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'non_field_errors': ['两个密码字段不一致。']})
+        self.assertEqual(response.data['non_field_errors'], ['两个密码字段不一致。'])
 
 
 class ActivationViewTest(restframework.APIViewTestCase,
@@ -593,7 +594,7 @@ class SetPasswordViewTest(restframework.APIViewTestCase,
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'new_password': ['该字段不能为空。']})
+        self.assertEqual(response.data['new_password'], ['该字段不能为空。'])
 
     @override_settings(DJOSER=dict(settings.DJOSER, **{'LOGOUT_ON_PASSWORD_CHANGE': True}))
     def test_post_should_logout_after_password_change(self):
