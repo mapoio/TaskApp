@@ -18,6 +18,10 @@ import djoser.utils
 import djoser.signals
 import djoser.serializers
 
+from TaskApp import settings as SETS
+
+SETS.TEST = True
+
 def create_user(**kwargs):
     data = {
         'username': 'john',

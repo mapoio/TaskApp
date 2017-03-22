@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf.urls import url, include,handler500
 from django.contrib import admin
 from rest_framework_swagger.views import get_swagger_view
 
@@ -28,3 +28,5 @@ urlpatterns = [
     url(r'^api/v1/auth/',include('profile.urls')),
     url(r'^api/v1/doc/', schema_view),
 ]
+
+handler500 = 'util.views.render_500'

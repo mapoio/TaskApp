@@ -3,7 +3,8 @@ from djoser import serializers, settings, utils,signals
 from TaskApp.settings import DEBUG
 from rest_framework import generics, permissions, status, response
 from django.contrib.auth import get_user_model
-User = get_user_model()
+
+Users = get_user_model()
 
 class CustomRegistrationView(RegistrationView):
     '''
@@ -19,6 +20,7 @@ class CustomRegistrationView(RegistrationView):
             self.send_activation_email(user)
         elif settings.get('SEND_CONFIRMATION_EMAIL'):
             self.send_confirmation_email(user)
+
 
     def send_activation_email(self, user):
         email_factory = utils.UserActivationEmailFactory.from_request(self.request, user=user)
@@ -50,7 +52,7 @@ class CustomPasswordResetView(utils.ActionViewMixin, generics.GenericAPIView):
 
     def get_users(self, email):
         if self._users is None:
-            active_users = User._default_manager.filter(
+            active_users = Users._default_manager.filter(
                 email__iexact=email,
                 is_active=True,
             )

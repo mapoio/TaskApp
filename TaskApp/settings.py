@@ -24,6 +24,8 @@ SECRET_KEY = 'ch0-mc-d_e!t9rb4f0d7o_6-4avkvsorc%xlq^+=u*m+&q+(3t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+TEST = False
+
 ALLOWED_HOSTS = [
     '*',
 ]
@@ -178,7 +180,7 @@ JWT_AUTH = {
 
 DJOSER = {
     'DOMAIN': '',
-    'SITE_NAME': 'Frontend',
+    'SITE_NAME': 'Font-end',
     'PASSWORD_RESET_CONFIRM_URL': 'api/v1/auth/user/password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'api/v1/auth/user/activate/{uid}/{token}',
     'SET_PASSWORD_RETYPE': False,
@@ -187,5 +189,6 @@ DJOSER = {
     'PASSWORD_VALIDATORS': [],
     'SERIALIZERS': {
         'user_registration': 'profile.serializer.UserRegistrationSerializer',
+        'user': 'profile.serializer.UserSerializer',
     },
 }

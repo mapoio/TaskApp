@@ -5,6 +5,7 @@ from company.models import Department
 from TaskApp.settings import DJOSER
 from django.db import transaction
 
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -39,14 +40,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id','username','email','is_active','profile','groups')
 
-    def create(self, validated_data):
-        profile_data = validated_data.pop('profile')
-        user = User.objects.create(**validated_data)
-        profile_data['user'] = user
-        profile = Profile(nickname=profile_data['nickname'], sex=profile_data['sex'], phone=profile_data['phone'],
-                          user=user, user_id=user.id)
-        profile.save()
-        return user
+    #应该编写一个update函数来更新
+    # def create(self, validated_data):
+    #     profile_data = validated_data.pop('profile')
+    #     user = User.objects.create(**validated_data)
+    #     profile_data['user'] = user
+    #     profile = Profile(nickname=profile_data['nickname'], sex=profile_data['sex'], phone=profile_data['phone'],
+    #                       user=user, user_id=user.id)
+    #     profile.save()
+    #     return user
     # 模型应当绑定为User，通过User来轻松创建
 
 
