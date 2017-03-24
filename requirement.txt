@@ -4,6 +4,7 @@ coreschema==0.0.4
 coverage==4.0.3
 defusedxml==0.5.0
 Django==1.10.6
+django-filter==1.0.1
 django-guardian==1.4.6
 django-jinja==2.2.2
 django-rest-swagger==2.1.2

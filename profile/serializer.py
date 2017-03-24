@@ -26,7 +26,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     department = DepartmentSerializer(many=True,read_only=True)
-    tag = TagSerializer(many=True,required=False,allow_null=True)
+    tag = TagSerializer(many=True,read_only=True)#应该建立单独的接口
 
     class Meta:
         model = Profile
@@ -34,12 +34,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()
+    profile = ProfileSerializer(read_only=True)#在下一次重构中，记得改变这一个值，必须使用update更新
 
     class Meta:
         model = User
-        fields = ('id','username','email','is_active','profile','groups')
+        fields = ('id','username','email','profile','groups')
 
+    # def update(self, instance, validated_data):
+    #     pass
     #应该编写一个update函数来更新
     # def create(self, validated_data):
     #     profile_data = validated_data.pop('profile')
@@ -61,6 +63,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id','username','email','password','profile')
+
+    # def validate(self, attrs):#验证器的作用，用于验证客户端的数据是否符合要求
+    #     if len(attrs['username']) < 6:
+    #         err = {
+    #             'username':[
+    #                 u'用户名必须大于等于6位！'
+    #             ],
+    #         }
+    #         raise serializers.ValidationError(err)
+    #     return attrs
 
 
     def user_create(self,validated_data):

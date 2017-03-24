@@ -24,11 +24,13 @@ SECRET_KEY = 'ch0-mc-d_e!t9rb4f0d7o_6-4avkvsorc%xlq^+=u*m+&q+(3t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEST = False
+TEST = False# 测试模式
 
 ALLOWED_HOSTS = [
     '*',
 ]
+
+# APPEND_SLASH = False
 
 # Application definition
 
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'guardian',
     'djoser',
     'company',
@@ -137,6 +140,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',

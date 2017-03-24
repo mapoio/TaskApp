@@ -20,13 +20,9 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
-    # url(r'^',include(route.urls))
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1/auth/',include('rest_framework.urls')),
-    url(r'^api/v1/auth/user/', include('TaskApp.user_url')),
     url(r'^api/v1/auth/',include('company.urls')),
-    url(r'^api/v1/auth/',include('profile.urls')),
+    url(r'^api/v1/auth/user/',include('profile.urls')),
     url(r'^api/v1/doc/', schema_view),
 ]
-
-handler500 = 'util.views.render_500'

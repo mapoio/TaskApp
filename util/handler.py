@@ -13,7 +13,7 @@ def custom_exception_handler(exc, context):
         # response.data['code'] = exc.status_code
         # response.data['error'] = exc.default_code
         if settings.TEST == False:
-            return ErrorResponse(err_code=exc.status_code // 100,err_message=exc.default_code,message=exc.detail,status=exc.status_code)
+            return ErrorResponse(err_code=exc.status_code // 100,err_message=exc.default_detail,message=exc.detail,status=exc.status_code)
     return response
 
 

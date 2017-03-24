@@ -709,12 +709,13 @@ class UserViewTest(restframework.APIViewTestCase,
 
         self.assert_status_equal(response, status.HTTP_200_OK)
         self.assertEqual(set(response.data.keys()), set(
-            [get_user_model().USERNAME_FIELD, get_user_model()._meta.pk.name] + get_user_model().REQUIRED_FIELDS
+            [get_user_model().USERNAME_FIELD, get_user_model()._meta.pk.name] + get_user_model().REQUIRED_FIELDS + ['groups','profile']
         ))
 
     def test_put_should_update_user(self):
         user = create_user()
         data = {
+            'username':'john',
             'email': 'ringo@beatles.com',
         }
         request = self.factory.put(user=user, data=data)
