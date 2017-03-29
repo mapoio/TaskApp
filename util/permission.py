@@ -1,6 +1,7 @@
 from rest_framework import permissions
 from guardian.core import ObjectPermissionChecker
-from guardian.shortcuts import get_perms_for_model
+from guardian.shortcuts import get_perms_for_model,get_user_perms
+from django.http import Http404
 
 """
 权限规则：
@@ -32,7 +33,8 @@ class ModulePermission(permissions.BasePermission):
         perms = get_perms_for_model(view.queryset.model)
         if request.method in permissions.SAFE_METHODS:
             return True
-        else:
+        elif view.action == 'list':
+            peimission = 'add_' + view.queryset.model._meta.app_label
             return True
 
     def has_object_permission(self, request, view, obj):
@@ -45,3 +47,68 @@ class ModulePermission(permissions.BasePermission):
                 return True
 
         return False
+
+
+class ObjectPermissions(permissions.DjangoModelPermissions):
+    """
+    The request is authenticated using Django's object-level permissions.
+    It requires an object-permissions-enabled backend, such as Django Guardian.
+
+    It ensures that the user is authenticated, and has the appropriate
+    `add`/`change`/`delete` permissions on the object using .has_perms.
+
+    This permission can only be applied against view classes that
+    provide a `.queryset` attribute.
+    """
+    perms_map = {
+        'GET': [],
+        'OPTIONS': [],
+        'HEAD': [],
+        'POST': ['%(app_label)s.add_%(model_name)s'],
+        'PUT': ['%(app_label)s.change_%(model_name)s'],
+        'PATCH': ['%(app_label)s.change_%(model_name)s'],
+        'DELETE': ['%(app_label)s.delete_%(model_name)s'],
+    }
+
+    def get_required_object_permissions(self, method, model_cls):
+        kwargs = {
+            'app_label': model_cls._meta.app_label,
+            'model_name': model_cls._meta.model_name
+        }
+        return [perm % kwargs for perm in self.perms_map[method]]
+
+    def has_object_permission(self, request, view, obj):
+        if hasattr(view, 'get_queryset'):
+            queryset = view.get_queryset()
+        else:
+            queryset = getattr(view, 'queryset', None)
+
+        assert queryset is not None, (
+            'Cannot apply DjangoObjectPermissions on a view that '
+            'does not set `.queryset` or have a `.get_queryset()` method.'
+        )
+
+        model_cls = queryset.model
+        user = request.user
+
+        perms = self.get_required_object_permissions(request.method, model_cls)
+
+        # TODO 在此处添加对象级别的权限控制（封装并传参数 permission_required）
+        if not user.has_perms(perms, obj):
+            # If the user does not have permissions we need to determine if
+            # they have read permissions to see 403, or not, and simply see
+            # a 404 response.
+
+            if request.method in permissions.SAFE_METHODS:
+                # Read permissions already checked and failed, no need
+                # to make another lookup.
+                raise Http404
+
+            read_perms = self.get_required_object_permissions('GET', model_cls)
+            if not user.has_perms(read_perms, obj):
+                raise Http404
+
+            # Has read permissions.
+            return False
+
+        return True
