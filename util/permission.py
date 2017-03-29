@@ -70,12 +70,45 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
         'DELETE': ['%(app_label)s.delete_%(model_name)s'],
     }
 
-    def get_required_object_permissions(self, method, model_cls):
+    _pydev_stop_at_break = True
+
+    def get_required_object_permissions(self, view, method, model_cls):
+        # TODO 在此处添加获取用户自定义的需要的权限
+        if hasattr(view, 'permission_required'):
+            for parm_test in view.permission_required:
+                self.perms_map[parm_test] = view.permission_required[parm_test]
         kwargs = {
             'app_label': model_cls._meta.app_label,
             'model_name': model_cls._meta.model_name
         }
         return [perm % kwargs for perm in self.perms_map[method]]
+
+    def has_permission(self, request, view):
+        # Workaround to ensure DjangoModelPermissions are not applied
+        # to the root view when using DefaultRouter.
+        if getattr(view, '_ignore_model_permissions', False):
+            return True
+
+        if hasattr(view, 'get_queryset'):
+            queryset = view.get_queryset()
+        else:
+            queryset = getattr(view, 'queryset', None)
+
+        assert queryset is not None, (
+            'Cannot apply DjangoModelPermissions on a view that '
+            'does not set `.queryset` or have a `.get_queryset()` method.'
+        )
+
+        if view.suffix != 'List':
+            return True
+
+        perms = self.get_required_permissions(request.method, queryset.model)
+
+        return (
+            request.user and
+            (permissions.is_authenticated(request.user) or not self.authenticated_users_only) and
+            request.user.has_perms(perms)
+        )
 
     def has_object_permission(self, request, view, obj):
         if hasattr(view, 'get_queryset'):
@@ -91,9 +124,19 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
         model_cls = queryset.model
         user = request.user
 
-        perms = self.get_required_object_permissions(request.method, model_cls)
+        perms = self.get_required_object_permissions(view, request.method, model_cls)
+
+        if 'all' in perms:
+            return True
+
+        checker = ObjectPermissionChecker(user)
+
+        for perm in perms:
+            if checker.has_perm(perm, obj):
+                return True
 
         # TODO 在此处添加对象级别的权限控制（封装并传参数 permission_required）
+        # TODO 记得有外键`关联的地方设置on_delete属性，否则后果严重
         if not user.has_perms(perms, obj):
             # If the user does not have permissions we need to determine if
             # they have read permissions to see 403, or not, and simply see
@@ -104,7 +147,7 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
                 # to make another lookup.
                 raise Http404
 
-            read_perms = self.get_required_object_permissions('GET', model_cls)
+            read_perms = self.get_required_object_permissions(view, 'GET', model_cls)
             if not user.has_perms(read_perms, obj):
                 raise Http404
 
