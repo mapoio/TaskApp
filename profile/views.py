@@ -2,20 +2,21 @@ from rest_framework import viewsets
 from django.contrib.auth.models import User
 from .serializer import UserSerializer
 from djoser.views import RegistrationView
-from djoser import serializers, settings, utils,signals
+from djoser import serializers, settings, utils, signals
 from TaskApp.settings import DEBUG
 from rest_framework import generics, permissions, status, response
 from django.contrib.auth import get_user_model
+
 Users = get_user_model()
+
 
 # Create your views here.
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.filter(is_active=True).order_by('-id')
     serializer_class = UserSerializer
-    # lookup_field = ('id','username',)
-    filter_fields = ('id','username',)
+    filter_fields = ('id', 'username',)
 
 
 class CustomRegistrationView(RegistrationView):
@@ -30,7 +31,6 @@ class CustomRegistrationView(RegistrationView):
             self.send_activation_email(user)
         elif settings.get('SEND_CONFIRMATION_EMAIL'):
             self.send_confirmation_email(user)
-
 
     def send_activation_email(self, user):
         email_factory = utils.UserActivationEmailFactory.from_request(self.request, user=user)
@@ -71,7 +71,6 @@ class CustomPasswordResetView(utils.ActionViewMixin, generics.GenericAPIView):
         for user in self.get_users(serializer.data['email']):
             self.send_password_reset_email(user)
         return response.Response(status=status.HTTP_204_NO_CONTENT)
-
 
     def send_password_reset_email(self, user):
         email_factory = utils.UserPasswordResetEmailFactory.from_request(self.request, user=user)

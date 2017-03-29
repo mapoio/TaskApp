@@ -1,18 +1,14 @@
-from .models import Company,Department
+from .models import Company, Department
 from rest_framework import serializers
 
 
-class CompanySerializer(serializers.HyperlinkedModelSerializer):
-
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ('url','name','info','department',)
-        depth = 1
+        fields = ('id', 'name', 'info', 'department')
 
 
-class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
-    # company = serializers.ReadOnlyField(source='company.name')
+class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ('url','company','name','info')
-        depth = 1
+        fields = ('id', 'company', 'name', 'info', 'profile')

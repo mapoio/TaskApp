@@ -22,6 +22,7 @@ from TaskApp import settings as SETS
 
 SETS.TEST = True
 
+
 def create_user(**kwargs):
     data = {
         'username': 'john',
@@ -62,7 +63,7 @@ class RegistrationViewTest(restframework.APIViewTestCase,
             'username': 'john',
             'email': 'john@beatles.com',
             'password': 'secret',
-            'profile':'',
+            'profile': '',
         }
         request = self.factory.post(data=data)
 
@@ -709,13 +710,14 @@ class UserViewTest(restframework.APIViewTestCase,
 
         self.assert_status_equal(response, status.HTTP_200_OK)
         self.assertEqual(set(response.data.keys()), set(
-            [get_user_model().USERNAME_FIELD, get_user_model()._meta.pk.name] + get_user_model().REQUIRED_FIELDS + ['groups','profile']
+            [get_user_model().USERNAME_FIELD, get_user_model()._meta.pk.name] + get_user_model().REQUIRED_FIELDS + [
+                'groups', 'profile']
         ))
 
     def test_put_should_update_user(self):
         user = create_user()
         data = {
-            'username':'john',
+            'username': 'john',
             'email': 'ringo@beatles.com',
         }
         request = self.factory.put(user=user, data=data)
