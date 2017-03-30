@@ -1,7 +1,7 @@
 from rest_framework import permissions
 from guardian.core import ObjectPermissionChecker
-from guardian.shortcuts import get_perms_for_model,get_user_perms
-from django.http import Http404
+from guardian.shortcuts import get_perms_for_model, get_user_perms
+from rest_framework.exceptions import NotFound, PermissionDenied
 
 """
 权限规则：
@@ -25,30 +25,6 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         return obj.owner == request.user
 
 
-class ModulePermission(permissions.BasePermission):
-    authenticated_users_only = True
-
-    # TOdo 权限检查，在此处添加，要自由控制，做好封装准备，当请求是post时，应当检查权限
-    def has_permission(self, request, view):
-        perms = get_perms_for_model(view.queryset.model)
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        elif view.action == 'list':
-            peimission = 'add_' + view.queryset.model._meta.app_label
-            return True
-
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        checker = ObjectPermissionChecker(request.user)
-        permission_required = view.permission_required
-        for perm in permission_required:
-            if checker.has_perm(perm, obj):
-                return True
-
-        return False
-
-
 class ObjectPermissions(permissions.DjangoModelPermissions):
     """
     The request is authenticated using Django's object-level permissions.
@@ -60,6 +36,7 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
     This permission can only be applied against view classes that
     provide a `.queryset` attribute.
     """
+
     perms_map = {
         'GET': [],
         'OPTIONS': [],
@@ -76,7 +53,8 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
         # TODO 在此处添加获取用户自定义的需要的权限
         if hasattr(view, 'permission_required'):
             for parm_test in view.permission_required:
-                self.perms_map[parm_test] = view.permission_required[parm_test]
+                if self.perms_map[parm_test].__len__() == 0:
+                    self.perms_map[parm_test].append(view.permission_required[parm_test])
         kwargs = {
             'app_label': model_cls._meta.app_label,
             'model_name': model_cls._meta.model_name
@@ -84,8 +62,10 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
         return [perm % kwargs for perm in self.perms_map[method]]
 
     def has_permission(self, request, view):
+        # return True
         # Workaround to ensure DjangoModelPermissions are not applied
         # to the root view when using DefaultRouter.
+
         if getattr(view, '_ignore_model_permissions', False):
             return True
 
@@ -98,7 +78,7 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
             'Cannot apply DjangoModelPermissions on a view that '
             'does not set `.queryset` or have a `.get_queryset()` method.'
         )
-
+        # 这里以后要添加权限控制，控制list的显示与不显示
         if view.suffix != 'List':
             return True
 
@@ -135,9 +115,10 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
             if checker.has_perm(perm, obj):
                 return True
 
+        # print(user.get_user_perms(obj))
         # TODO 在此处添加对象级别的权限控制（封装并传参数 permission_required）
         # TODO 记得有外键`关联的地方设置on_delete属性，否则后果严重
-        if not user.has_perms(perms, obj):
+        if not user.has_perms(perms):
             # If the user does not have permissions we need to determine if
             # they have read permissions to see 403, or not, and simply see
             # a 404 response.
@@ -145,13 +126,21 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
             if request.method in permissions.SAFE_METHODS:
                 # Read permissions already checked and failed, no need
                 # to make another lookup.
-                raise Http404
+                raise PermissionDenied
 
             read_perms = self.get_required_object_permissions(view, 'GET', model_cls)
-            if not user.has_perms(read_perms, obj):
-                raise Http404
+            if not user.has_perms(read_perms):
+                raise PermissionDenied
 
             # Has read permissions.
             return False
 
         return True
+
+
+class ObjectPermissionsOrAnonReadOnly(ObjectPermissions):
+    """
+        Similar to DjangoModelPermissions, except that anonymous users are
+        allowed read-only access.
+    """
+    authenticated_users_only = False

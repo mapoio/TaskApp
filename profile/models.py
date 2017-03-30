@@ -21,11 +21,23 @@ class Tag(models.Model):
 
 class Profile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    user = models.OneToOneField(User, unique=True, related_name='profile', db_index=True)
-    nickname = models.CharField(max_length=64, default='', blank=True, db_index=True)
-    sex = models.IntegerField(default=0)
-    phone = models.CharField(max_length=64, default='', blank=True)
-    department = models.ForeignKey(Department, null=True, related_name='profile', default=None)
+    user = models.OneToOneField(User,
+                                unique=True,
+                                related_name='profile',
+                                db_index=True)
+    nickname = models.CharField(max_length=64,
+                                default='',
+                                blank=True,
+                                db_index=True)
+    sex = models.BooleanField(default=0)
+    phone = models.CharField(max_length=64,
+                             default='',
+                             blank=True)
+    department = models.ForeignKey(Department,
+                                   null=True,
+                                   related_name='profile',
+                                   default=None,
+                                   on_delete=models.SET_NULL)
 
     class Meta:
         ordering = ('-created', 'nickname')
