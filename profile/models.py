@@ -21,6 +21,7 @@ class Tag(models.Model):
 
 class Profile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
+
     user = models.OneToOneField(User,
                                 unique=True,
                                 related_name='profile',
@@ -28,16 +29,26 @@ class Profile(models.Model):
     nickname = models.CharField(max_length=64,
                                 default='',
                                 blank=True,
-                                db_index=True)
-    sex = models.BooleanField(default=0)
+                                db_index=True,
+                                verbose_name=u'姓名')
+
+    sex = models.BooleanField(default=0,
+                              verbose_name=u'性别',
+                              help_text=u'这个还是要选的')
+
     phone = models.CharField(max_length=64,
                              default='',
-                             blank=True)
+                             blank=True,
+                             verbose_name=u'电话',
+                             help_text=u'11位中国大陆地区的手机号码')
+
     department = models.ForeignKey(Department,
                                    null=True,
                                    related_name='profile',
                                    default=None,
-                                   on_delete=models.SET_NULL)
+                                   on_delete=models.SET_NULL,
+                                   verbose_name=u'组织',
+                                   help_text=u'选择一个适合的组织')
 
     class Meta:
         ordering = ('-created', 'nickname')

@@ -116,8 +116,6 @@ class ObjectPermissions(permissions.DjangoModelPermissions):
                 return True
 
         # print(user.get_user_perms(obj))
-        # TODO 在此处添加对象级别的权限控制（封装并传参数 permission_required）
-        # TODO 记得有外键`关联的地方设置on_delete属性，否则后果严重
         if not user.has_perms(perms):
             # If the user does not have permissions we need to determine if
             # they have read permissions to see 403, or not, and simply see

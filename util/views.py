@@ -1,13 +1,23 @@
-from rest_framework import status
-from django.http import JsonResponse
-from django.shortcuts import redirect
+from rest_framework import viewsets
+from .serializer import Permission, PermissionSerializer, IsAdminUser, GuardianGroupSerializer, GuardianUserSerializer
+from guardian.models import GroupObjectPermission,UserObjectPermission
+
+
 # Create your views here.
-def render_500(request):
-    if request.is_ajax():
-        err = {
-            'error_code': 5,
-            'error': 'Internal Server Error',
-            'message': 'Internal Server Error',
-        }
-        return JsonResponse(err, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    return redirect('/error/?c=500')
+
+class PermissionViewSet(viewsets.ModelViewSet):
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    permission_classes = (IsAdminUser,)
+
+
+class GuardianGroupViewSet(viewsets.ModelViewSet):
+    queryset = GroupObjectPermission.objects.all()
+    serializer_class = GuardianGroupSerializer
+    permission_classes = (IsAdminUser,)
+
+
+class GuardianUserViewSet(viewsets.ModelViewSet):
+    queryset = UserObjectPermission.objects.all()
+    serializer_class = GuardianUserSerializer
+    permission_classes = (IsAdminUser,)
